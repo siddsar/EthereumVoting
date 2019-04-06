@@ -60,7 +60,7 @@ contract Voting {
     mapping(uint256 => uint) public hashRingtoNo;
     mapping(bytes32 => bool) public registeredKeys;
     mapping(bytes32 => uint) public hashKeytoRingNo;
-    
+
     /*******************************************
         Data for Voting
     *******************************************/
@@ -136,7 +136,7 @@ contract Voting {
             registeredKeys[sha3(publicKey)] = true; //registered public key?
             hashKeytoRingNo[sha3(publicKey)] = currentRingNo; // publickey of voter to ringno
 
-            return true;           
+            return true;
 
 
         }
@@ -157,11 +157,144 @@ contract Voting {
             return true;
         }
 
+        function finishVoting() returns bool{
+            require(msg.sender == ElectionAuthority, "Not authorized to do this");
+            require(state == 2, "Not in voting stage");
+
+            state = 3;
+            return true;
+        }
+
+        function gotoTallyPhase() returns bool{
+            require(msg.sender == ElectionAuthority, "Not authorized to do this");
+            require(state == 3, "Not in Finished stage");
+            require(secretShare.length == nParties,"number of parties dont match");
+
+            for(uint i = 0; i < secretShare.length; i++) {
+                require(secretShare[i]!=0,"zero secret");
+            }
+
+            require(reconstructedKey!=0,"key not set");
+
+            state = 4;
+
+            return true;
+        }
+
+
         function submitVote(
             uint256[3] encryptedVote,
-            
-        )
+            uint256[] pubKeys,
+            uint256 c_0,
+            uint256[] sign,
+            uint256[2] vlink)
+        returns (bool){
+            require(state == 2,"Not in voting phase");
+            if(registeredVoteLink[sha3(vlink)] != 0) {
+                return true;
+            }
 
-    
+            uint256 Hashring = LinkableRingSignature.hashToInt(pubKeys);
+            require(hashRingToIdx[ringHash]!=0,"hash not found");
+
+            if(LinkableRingSignature.verifyRingSignature(uint256(sha3(encryptedVote)), pubKeys, c_0, sign, vlink)) {
+                encryptedVotes.push([encryptedVote[0], encryptedVote[1], encryptedVote[2]]);
+                registeredVoteLink[sha3(vlink)] = encryptedVotes.length;
+                return true;
+            }
+
+            return false;
+
+        }
+
+        function publishSecretShares(uint index, uint256 subSecret) returns bool{
+            require(state==3,"Not in finished phase");
+            require(!registeredSubSecrets[subSecret],"already registered");
+            require(verifySecretShare(index, subSecret),"verifying secretshare failed");
+            registeredSubSecrets[subSecret] = true;
+            secretShare[index] = subSecret;
+            return true;
+
+        }
+
+        function verifySecretShare(uint idx, uint256 subSecret) constant return bool{
+            uint[2] memory Gs;
+            Gs[0] = Gx;
+            Gs[1] = Gy;
+
+            uint256[2] memory verifyparams;
+            verifyparams[0] = secretShareVerifyPublicParams[0][0];
+            verifyparams[1] = secretShareVerifyPublicParams[0][1];
+
+            for(uint j = 1; j < secretShareVerifyPublicParams.length; j++) {
+                uint256[3] memory T = Secp256k1._addMixed(Secp256k1._mul( ((idx+1) ** j), secretShareVerifyPublicParams[j]), verifyparams);
+                ECCMath.toZ1(T, pp);
+                verifyparams[0] = T[0];
+                verifyparams[1] = T[1];
+            }
+
+            uint256[3] memory R = Secp256k1._mul(subSecret, Gs);
+            ECCMath.toZ1(R, pp);
+            require(R[0] == verifyparams[0] && R[1] == verifyparams[1],"verification of secret share failed");
+            return true;
+
+        }
+
+        function publish_reconstructedKey(uint256 rekey) returns bool{
+            require(state==3,"not in finshed phase");
+            require(reconstructedKey==0,"already published");
+            uint[2] memory Gs;
+            Gs[0] = Gx;
+            Gs[1] = Gy;
+            uint256[3] memory R = Secp256k1._mul(rekey, Gs);
+            ECCMath.toZ1(R, pp);
+            require(Y[0] == thresholdKey[0] && Y[1] == thresholdKey[1],"Publishing failed");
+            reconstructedKey = rekey;
+            state = 4;
+            return true;
+
+        }
+
+        function tallyphase() constant returns int[10]{
+            require(state==4,"not in tally phase");
+            int[10] memory electionResults;
+
+            for(uint i = 0; i < encryptedVotes.length; i++){
+                uint256[2] memory P;
+                P[0] = encryptedVotes[i][0];
+                P[1] = encryptedVotes[i][1];
+                uint256 c = encryptedVotes[i][2];
+                uint256[3] memory H = Secp256k1._mul(reconstructedKey, P);
+                ECCMath.toZ1(H, pp);
+                uint vote = mulmod(c, ECCMath.invmod(H[1], nn), nn);
+                electionResults[vote] += 1;
+            }
+
+            return electionResults;
+        }
+
+        function getRingIdx(uint256[2] pubKey)constant returns (uint) {
+            return hashKeyToRingIdx[sha3(pubKey)];
+        }
+
+
+        function getRingSize(uint ringIdx) constant returns (uint) {
+            return ring[ringIdx].length;
+        }
+
+
+        function getNumberCastedVotes() constant returns (uint) {
+            return encryptedVotes.length;
+        }
+
+
+        function getNumRegisterVoters() constant returns (uint) {
+            return voters.length;
+        }
+
+
+        function numOfSecrets() constant returns (uint) {
+            return secretShare.length;
+        }
 
 }
