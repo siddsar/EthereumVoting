@@ -1,23 +1,194 @@
-<!DOCTYPE HTML>
-
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
-        <title>Election Authority Page</title>
+        <meta charset="UTF-8">
+        <title>Bulma - Tabs</title>
+        <link rel="shortcut icon" href="./images/fav_icon.png" type="image/x-icon">
+        <link rel='stylesheet prefetch' href='https://unpkg.com/bulma@0.7.4/css/bulma.min.css'>
+        <link rel='stylesheet prefetch' href='https://use.fontawesome.com/releases/v5.0.10/css/all.css'>
+        <link rel="stylesheet" href="./css/tabs.css">
     </head>
-
     <body>
-        <form name = "tab">
+        
+        <section class="hero is-info">
+            <div class="hero-body">
+                <div class="container">
+                    <h1 class="title">
+                    Decentralized Voting
+                    </h1>
+                    <h2 class="subtitle">
+                    Election Authority
+                    </h2>
+                </div>
+            </div>
+            <div class="tabs is-boxed is-centered main-menu" id="nav">
+                <ul>
+                    <li data-target="pane-1" id="1" class="is-active">
+                        <a>
+                            <span>Setup Election</span>
+                        </a>
+                    </li>
+                    <li data-target="pane-2" id="2" >
+                        <a>
+                            <span>Register Voters</span>
+                        </a>
+                    </li>
+                    <li data-target="pane-3" id="3">
+                        <a>
+                            <span>End Registration</span>
+                        </a>
+                    </li>
+                    <li data-target="pane-4" id="4">
+                        <a>
+                            <span>View Voters</span>
+                        </a>
+                    </li>
+                    <li data-target="pane-5" id="5">
+                            <a>
+                                <span>View Votes</span>
+                            </a>
+                    </li>
+                    <li data-target="pane-6" id="6">
+                            <a>
+                                <span>End Voting Phase</span>
+                            </a>
+                    </li>
+                    <li data-target="pane-7" id="7">
+                            <a>
+                                <span>Count Votes</span>
+                            </a>
+                    </li>
 
-            <button type="submit" onclick="javascript: form.action = '/Setup-Election';">Setup Election</button>
-            <button type="submit" onclick="javascript: form.action = '(event, 'Register')">Registration</button>
-            <button type="submit" onclick="javascript: form.action = '(event, 'End Registration')">End Registration</button>
-            <button type="submit" onclick="javascript: form.action = '(event, 'View Voter List')">View  Voter List</button>
-            <button type="submit" onclick="javascript: form.action = '(event, 'View Votes')">View Votes</button>
-            <button type="submit" onclick="javascript: form.action = '(event, 'End Voting')">End Voting</button>
-            <button type="submit" onclick="javascript: form.action = '(event, 'Count Votes')">Count Votes</button>
-                     
-        </form>
-    </body>
+                </ul>
+            </div>
+            <div class="tab-content">
+                <div class="tab-pane is-active" id="pane-1" class="level">
+                        <article id="intro">
+								<h2 class="title">Setup Election</h2>
+								
+								<form method="post" action="#">
+									
+									<div class="field">
+										<label class = "label" for="numVoterPerRing">Number of Voter per Ring</label>
+										<input class = "input" type="number" min=5 value=5 name="numVoterPerRing" id="numVoterPerRing" />
+									</div>
+									
+									<div class="field">
+										<label class = "label" for="numVotingOptions">Number of Voting Options</label>
+										<input class = "input" type="number" min=2 value=2 name="numVotingOptions" id="numVotingOptions" />
+									</div>
 
+									<div class="field">
+										<label class = "label" for="tVoters">t</label>
+										<input class = "input" type="number" min=0 value=10 name="tVoters" id="tVoters" />
+									</div>
+									
+									<div class="field">
+										<label class = "label" for="nVoters">n</label>
+										<input class = "input" type="text" min=0 value=25 name="nVoters" id="nVoters" />
+									</div>
 
+									<div class="field">
+										<label class = "label" for="VotingEndTime">Theshold Parameters Upload</label>
+										<input class = "input" id="uploadThresholdParamsButton" type="file" onchange='openFile(event);' class="center">
+									</div>
+
+									<div class="control">
+										<button class = "button is-link" id="registerElection">Register Election Parameters</button>
+									</div>
+
+								</form>	
+
+																
+							</article>
+                </div>
+                <div class="tab-pane" id="pane-2">
+                        <article id="work">
+								<form action="#" method="post">
+									<div class="field">
+										<label class = "label" for="pubKeyToRegisterX">Public Key To Register</label>
+										<input class = "input" type="text" id="pubKeyToRegisterX" name="pubKeyToRegisterX" >
+									</div>
+
+									<div class="field">
+										<input class = "input" type="text" id="pubKeyToRegisterY" name="pubKeyToRegisterY" >
+									</div>
+
+									<div class="field">
+										<button class = "button is-link" id="registerVoter" >Register Voter</button>
+									</div>
+								</form>
+							</article>
+                </div>
+
+                <div class="tab-pane" id="pane-3">
+                    <article id = "end">
+                            <h2 class = "title">Registration Phase Ended!</h2>
+                    </article>
+                </div>
+                <div class="tab-pane" id="pane-4">
+                        <article id="about">
+								
+								<h2 class="title">Registered Voters</h2>
+								
+								<div class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+									<table>
+										<thead>
+											<tr>
+												<th>Public Key</th>
+												<th>Ring Idx</th>
+												<th>Voter Idx</th>
+											</tr>
+										</thead>
+										<tbody id="registeredPublicKeyTable">
+											
+										</tbody>
+									</table>
+								</div>
+							</article>
+                </div>
+                <div class="tab-pane" id="pane-5">
+                        <article id="contact">
+								<h2 class="major">Votes</h2>
+								<div class="table">
+									<table>
+										<thead>
+											<tr>
+												<th>C</th>
+												<th>r</th>
+											</tr>
+										</thead>
+										<tbody id="registeredVotesTable">
+											
+										</tbody>
+									</table>
+								</div>
+							</article>
+                </div>
+                <div class="tab-pane" id="pane-6">
+                    
+                </div>
+                <div class="tab-pane" id="pane-7">
+                        <article id="elements">
+                                <h2 class="major">Election Result</h2>
+								<table class = "table">
+                                    <thead>
+                                        <tr>
+                                            <th>Option No.</th>
+                                            <th>Number of Votes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="electionResults">
+                                        
+                                    </tbody>
+                                </table>
+								
+							</article>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="js/bulma.js"></script>
+    <script src="js/tabs.js"></script>
+</body>
 </html>
