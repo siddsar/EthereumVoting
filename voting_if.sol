@@ -23,8 +23,8 @@ contract Voting {
     // Order of G
     uint constant nn = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141;
 
-    int state;
-    address private ElectionAuthority;
+    int public state;
+    address public ElectionAuthority;
     /*
     Stage values : -
 
