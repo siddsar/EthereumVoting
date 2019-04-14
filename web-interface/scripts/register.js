@@ -1,12 +1,12 @@
 (function( REGISTRATION, $, undefined ) {
 
-    // var registrationConfirmationModal = new tingle.modal({
-    //     footer: true,
-    //     stickyFooter: false,
-    //     closeMethods: ['escape', 'button', 'overlay'],
-    //     closeLabel: "Close",
-    //     cssClass: ['custom-class-1', 'custom-class-2']
-    // });
+    var registrationConfirmationModal = new tingle.modal({
+        footer: true,
+        stickyFooter: false,
+        closeMethods: ['escape', 'button', 'overlay'],
+        closeLabel: "Close",
+        cssClass: ['custom-class-1', 'custom-class-2']
+    });
 
     REGISTRATION.registerVoter = function() {
         var pubKeyX = new BigNumber($('#pubKeyToRegisterX').val());
@@ -33,7 +33,7 @@
     }
 
     REGISTRATION.endRegistration = function() {
-        var txHash = ELECTION.contract.endRegistrationPhase.sendTransaction({from:ELECTION.owner, gas:4200000});
+        var txHash = ELECTION.contract.gotoVotingPhase.sendTransaction({from:ELECTION.owner, gas:4200000});
         ADMIN.changingContractState(txHash);
     }
 

@@ -3,8 +3,8 @@
     VOTERS.tabs = ['viewElectionTabButton', 'downloadRingTabButton', 'castVoteTabButton', 'viewVotersTabButton', 'viewVotesTabButton', 'tallyTabButton'];
     VOTERS.vote = {}
 
-    var account = null;
-    var passcode = null;
+    // var account = null;
+    // var passcode = null;
 
     var modal = new tingle.modal({
         footer: true,
@@ -14,27 +14,27 @@
         cssClass: ['custom-class-1', 'custom-class-2']
     });
 
-    var verifyPasscode = function() {
-        var pass = $('#passcode').val();
-        var acc = $('#accounts').val();
+    // var verifyPasscode = function() {
+    //     var pass = $('#passcode').val();
+    //     var acc = $('#accounts').val();
 
-        setTimeout(function() {
-            try {
-                web3.personal.unlockAccount(acc, pass);
-                modal.close()
-                passcode = pass;
-                account = acc;
-            }
-            catch(err) {
-                $('#passcode').val('');
-                alert('Could not unlock contract');
-            } 
-        }, 100);
-    }
+    //     setTimeout(function() {
+    //         try {
+    //             web3.personal.unlockAccount(acc, pass);
+    //             modal.close()
+    //             passcode = pass;
+    //             account = acc;
+    //         }
+    //         catch(err) {
+    //             $('#passcode').val('');
+    //             alert('Could not unlock contract');
+    //         } 
+    //     }, 100);
+    // }
 
-    modal.setContent('<div id="modalContent"> </div>');
-    modal.addFooterBtn('Verify', 'tingle-btn--pull-right', verifyPasscode);
-    $("#modalContent").append($('#modal').clone().css('display', 'table'));
+    // modal.setContent('<div id="modalContent"> </div>');
+    // modal.addFooterBtn('Verify', 'tingle-btn--pull-right', verifyPasscode);
+    // $("#modalContent").append($('#modal').clone().css('display', 'table'));
 
     function sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
@@ -197,7 +197,7 @@
         $('#castVoteButton').attr("disabled", "disabled");
 
 
-        var validVote = ELECTION.contract.castVote.call(
+        var validVote = ELECTION.contract.submitVote.call(
             VOTERS.vote['MESSAGE'],
             VOTERS.vote['PUBLIC_KEYS'],
             VOTERS.vote['C'],
@@ -205,9 +205,9 @@
             VOTERS.vote['LINK']);
 
         if(validVote) {
-            web3.personal.unlockAccount(account, passcode);
+            // web3.personal.unlockAccount(account, passcode);
             
-            var txHash = ELECTION.contract.castVote.sendTransaction(
+            var txHash = ELECTION.contract.submitVote.sendTransaction(
                 VOTERS.vote['MESSAGE'],
                 VOTERS.vote['PUBLIC_KEYS'],
                 VOTERS.vote['C'],
@@ -234,19 +234,19 @@
         });
     }
 
-    VOTERS.authenticateUser = function() {
-        modal.open();
+//     VOTERS.authenticateUser = function() {
+//         modal.open();
 
-        web3.personal.listAccounts.forEach(function(obj, i){
-            $('#accounts').append('<option value="'+ obj +'">'+ obj +'</option>');
-        });
-    }
+//         web3.personal.listAccounts.forEach(function(obj, i){
+//             $('#accounts').append('<option value="'+ obj +'">'+ obj +'</option>');
+//         });
+//     }
 
     VOTERS.isAuthenticated = function() {
-        return account && passcode;
+        return true;
     }
 
-}( window.VOTERS = window.VOTERS || {}, jQuery ));
+// }( window.VOTERS = window.VOTERS || {}, jQuery ));
 
 function loadElectionInfo() {
 
@@ -257,16 +257,16 @@ function loadElectionInfo() {
         return;
     }
 
-    var registartionStartTime = ELECTION.unixTimeToDate(ELECTION.contract.registrationStartTime.call());
-    var registrationEndTime = ELECTION.unixTimeToDate(ELECTION.contract.registrationEndTime.call());
+    // var registartionStartTime = ELECTION.unixTimeToDate(ELECTION.contract.registrationStartTime.call());
+    // var registrationEndTime = ELECTION.unixTimeToDate(ELECTION.contract.registrationEndTime.call());
 
-    var votingStartTime = ELECTION.unixTimeToDate(ELECTION.contract.votingStartTime.call());
-    var votingEndTime = ELECTION.unixTimeToDate(ELECTION.contract.votingEndTime.call());
+    // var votingStartTime = ELECTION.unixTimeToDate(ELECTION.contract.votingStartTime.call());
+    // var votingEndTime = ELECTION.unixTimeToDate(ELECTION.contract.votingEndTime.call());
 
-    var tParties = ELECTION.contract.tParties.call();
+    var tParties = ELECTION.contract.t.call();
 
-    var numVotersRing = ELECTION.contract.numVoterPerRing.call();
-    var numVotingOptions = ELECTION.contract.numberOfVotingOptions.call();
+    var numVotersRing = ELECTION.contract.numVotersPerRing.call();
+    var numVotingOptions = ELECTION.contract.numVotingOptions.call();
 
     var thresholdKey = [0, 0];
     thresholdKey[0] = ELECTION.contract.thresholdKey.call(0);

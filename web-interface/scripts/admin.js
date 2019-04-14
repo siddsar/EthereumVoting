@@ -4,18 +4,18 @@
       return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    var modal = new tingle.modal({
-        footer: true,
-        stickyFooter: false,
-        closeMethods: [],
-        closeLabel: "Close",
-        cssClass: ['custom-class-1', 'custom-class-2']
-    });
+    // var modal = new tingle.modal({
+    //     footer: true,
+    //     stickyFooter: false,
+    //     closeMethods: [],
+    //     closeLabel: "Close",
+    //     cssClass: ['custom-class-1', 'custom-class-2']
+    // });
 
 
     // ADMIN.passcode = null;
 
-    // ADMIN.tabs = ['setupTabButton', 'finishVotingPhaseButton', 'endRegistration', 'registerTabButton', 'viewVotersTabButton', 'viewVotesTabButton', 'tallyTabButton'];
+    ADMIN.tabs = ['setupTabButton', 'finishVotingPhaseButton', 'endRegistration', 'registerTabButton', 'viewVotersTabButton', 'viewVotesTabButton', 'tallyTabButton'];
 
     // ADMIN.verifyPasscode = function() {
 
@@ -36,9 +36,9 @@
     //     }, 100);
     // }
 
-    modal.setContent('<div id="modalContent"> </div>');
-    modal.addFooterBtn('Verify', 'tingle-btn--pull-right', ADMIN.verifyPasscode);
-    $("#modalContent").append($('#modal').clone().css('display', 'table'));
+    // modal.setContent('<div id="modalContent"> </div>');
+    // modal.addFooterBtn('Verify', 'tingle-btn--pull-right', ADMIN.verifyPasscode);
+    // $("#modalContent").append($('#modal').clone().css('display', 'table'));
 
 
     ADMIN.changingContractState = async function(txHash) {
@@ -128,15 +128,15 @@
         return state;
     }
 
-    ADMIN.askForPasscode = function() {
-        modal.open();
-    }
+    // ADMIN.askForPasscode = function() {
+    //     modal.open();
+    // }
 
     ADMIN.endVotingPhase = function() {
-        var endable = ELECTION.contract.endVotingPhase.call();
+        var endable = ELECTION.contract.finishVoting.call();
 
         if(endable) {
-            var txHash = ELECTION.contract.endVotingPhase.sendTransaction({from:ELECTION.owner, gas:4200000});
+            var txHash = ELECTION.contract.finishVoting.sendTransaction({from:ELECTION.owner, gas:4200000});
             ADMIN.changingContractState(txHash);
         }
     } 
@@ -157,19 +157,19 @@
 $(document).ready(function() {
     ELECTION.hideTabs(ADMIN.tabs);
     
-    if(web3.eth.accounts.includes(ELECTION.owner)) {
-        ADMIN.askForPasscode();
-    }
-    else{
-        $('#electionDescription').html('Your geth instance does not have an administrator key.');
-    }
+    // if(web3.eth.accounts.includes(ELECTION.owner)) {
+    //     ADMIN.askForPasscode();
+    // }
+    // else{
+    //     $('#electionDescription').html('Your geth instance does not have an administrator key.');
+    // }
 
-    $("#passcode").on('keydown', function (e) {
-        if (e.keyCode == 13) {
-            e.preventDefault();
-            ADMIN.verifyPasscode();
-        }
-    });
+    // $("#passcode").on('keydown', function (e) {
+    //     if (e.keyCode == 13) {
+    //         e.preventDefault();
+    //         ADMIN.verifyPasscode();
+    //     }
+    // });
 
     $('#finishVotingPhaseButton').on('click', function() {
         ADMIN.endVotingPhase();

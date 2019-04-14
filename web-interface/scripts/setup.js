@@ -43,9 +43,8 @@ function verifySetupForm() {
     var tParties = parseInt($('#tVoters').val());
     var nParties = parseInt($('#nVoters').val());
 
-    var validRegistrationParameters = ELECTION.contract.finishSetUp.call(
+    var validRegistrationParameters = ELECTION.contract.setUpElection.call(
         numVoterPerRing,
-        
         numberVoterOptions,
         tParties,
         nParties,
@@ -54,10 +53,9 @@ function verifySetupForm() {
 
     if(validRegistrationParameters) {
 
-        web3.personal.unlockAccount(ELECTION.owner, ADMIN.passcode);
-        var txHash = ELECTION.contract.finishSetUp.sendTransaction(
+        // web3.personal.unlockAccount(ELECTION.owner, ADMIN.passcode);
+        var txHash = ELECTION.contract.setUpElection.sendTransaction(
             numVoterPerRing,
-            
             numberVoterOptions,
             tParties,
             nParties,

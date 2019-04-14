@@ -1,18 +1,17 @@
 if (typeof web3 !== 'undefined') {
   web3 = new Web3(web3.currentProvider);
 } else {
-  web3 = new Web3(new Web3.providers.HttpProvider("http://192.168.1.70:8545"));
+    alert("Install Metamask.")
 }
 
 BigNumber = web3.BigNumber;
 
 (function( ELECTION, $, undefined ) {
     
-    var abi = compiledContractDefinition['contracts']['Voting']['abi'];
-
-    ELECTION.address = "0xbd5f37c84fdf1b8f73f6040c94e2f46ccbf8ef5a";
+    // var abi = compiledContractDefinition['contracts']['Voting']['abi'];
+    ELECTION.address = "0xbe7a497d5ba010f0fb4726b3e0ce57fbc37fd760";
     ELECTION.contract = web3.eth.contract(abi).at(ELECTION.address);
-    ELECTION.owner = ELECTION.contract.owner.call();
+    ELECTION.owner = ELECTION.contract.ElectionAuthority.call();
     ELECTION.thresholdKey = [];
     ELECTION.publicVerifyParams = [];
         
@@ -86,10 +85,10 @@ BigNumber = web3.BigNumber;
 
     ELECTION.tallyResults = function(div) {
         var state = ELECTION.contract.state.call();
-        var numVotingOptions = parseInt(ELECTION.contract.numberOfVotingOptions.call().toString(10));
+        var numVotingOptions = parseInt(ELECTION.contract.numVotingOptions.call().toString(10));
 
         if(state = ELECTION.states['READY_TO_TALLY']) {
-            var results = ELECTION.contract.tallyElection.call();
+            var results = ELECTION.contract.tallyphase.call();
             return results.slice(1, numVotingOptions + 1);
         }        
 
@@ -98,7 +97,7 @@ BigNumber = web3.BigNumber;
     }
 
     ELECTION.keyCanBeReconstructed = function() {
-        var n = ELECTION.contract.nParties.call();
+        var n = ELECTION.contract.n.call();
         var secrets = [];
 
         for(var i = 0; i < n ;i++) {
