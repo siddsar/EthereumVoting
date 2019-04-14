@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Bulma - Tabs</title>
+        <link rel="shortcut icon" href="./images/fav_icon.png" type="image/x-icon">
+        <link rel='stylesheet prefetch' href='https://unpkg.com/bulma@0.7.4/css/bulma.min.css'>
+        <link rel='stylesheet prefetch' href='https://use.fontawesome.com/releases/v5.0.10/css/all.css'>
+        <link rel="stylesheet" href="./css/tabs.css">
+    </head>
+    <body>
+        
+        <section class="hero is-info">
+            <div class="hero-body">
+                <div class="container">
+                    <h1 class="title">
+                    Decentralized Voting
+                    </h1>
+                    <p id='electionDescription'>
+                                    
+                    </p>
+                </div>
+            </div>
+            <div class="tabs is-boxed is-centered main-menu" id="nav">
+                <ul>
+                    <li data-target="pane-1" id="1" class="is-active">
+                        <a>
+                            <span>Election Data</span>
+                        </a>
+                    </li>
+                    <li data-target="pane-2" id="2" >
+                        <a>
+                            <span>Download Ring</span>
+                        </a>
+                    </li>
+                    <li data-target="pane-3" id="3">
+                        <a>
+                            <span>Cast Vote</span>
+                        </a>
+                    </li>
+                    <li data-target="pane-4" id="4">
+                        <a>
+                            <span>View Voters</span>
+                        </a>
+                    </li>
+                    <li data-target="pane-5" id="5">
+                            <a>
+                                <span>View Votes</span>
+                            </a>
+                    </li>
+                    <li data-target="pane-6" id="6">
+                            <a>
+                                <span>Count Votes</span>
+                            </a>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="tab-content">
+                <div class="tab-pane is-active" id="pane-1" class="level">
+                    <article id="intro">
+                        <h2 class="major">View Election Data</h2>
+                        
+                        <div id="electionInfo">
+                            
+                        </div>
+
+                    </article>
+                </div>
+                <div class="tab-pane" id="pane-2">
+                        <article id="ring">
+                                <h2 class="major"> Download Ring </h2>
+
+                                <form action="#" method="post">
+                                    <div class="field">
+                                        <label class="label">Public Key to look for ring</label>
+                                        <input class="input" type="text" id="pubKeyX" name="pubKeyX" >
+                                    </div>
+
+                                    <div class="field">
+                                        <input class="input" type="text" id="pubKeyY" name="pubKeyY" >
+                                    </div>
+
+                                    <div class="field">
+                                        <button class="button is-link" id="downloadRing" class="button special icon fa-download center">Download Ring</button>
+                                    </div>
+                                </form>
+
+                            </article>
+                    
+                </div>
+
+                <div class="tab-pane" id="pane-3">
+                    <article id="work">
+                            <h2 class="major">Cast Vote</h2>
+                            
+                            <form action="#" method="post">
+                                <div class="field">
+                                    <label class="label" for="voteFile">Please upload Ring Signed Encrypted Vote in csv format.</label>
+                                    <input class="input" id="voteFile" type="file" onchange="VOTERS.parseVoteFile(event);" class="center">
+                                </div>
+    
+                                <div class="field">
+                                    <button class="button is-link" id="castVoteButton" class="button special icon fa-download center">Cast Vote</button>
+                                </div>
+                            </form>
+                        </article>
+                </div>
+                <div class="tab-pane" id="pane-4">
+                        <article id="about">
+                                
+                                <h2 class="major">Registered Voters</h2>
+                                
+                                <div class="table-wrapper">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Public Key</th>
+                                                    <th>Ring Idx</th>
+                                                    <th>Voter Idx</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="registeredPublicKeyTable">
+                                                
+                                            </tbody>
+                                        </table>
+                                    </div>
+                            </article>
+                    
+                </div>
+                <div class="tab-pane" id="pane-5">
+                        <article id="contact">
+                            <h2 class="major">Votes</h2>
+                            <div class="table-wrapper">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>C</th>
+                                            <th>r</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="registeredVotesTable">
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </article>
+                </div>
+                <div class="tab-pane" id="pane-6">
+                        <article id="elements">
+                                <h2 class="major">Election Results</h2>
+                                
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Option No.</th>
+                                            <th>Number of Votes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="electionResults">
+                                        
+                                    </tbody>
+                                </table>
+                                
+                            </article>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="js/bulma.js"></script>
+    <script src="js/tabs.js"></script>
+</body>
+</html>
